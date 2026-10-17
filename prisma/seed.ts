@@ -12,7 +12,6 @@ async function main() {
       { name: 'Косметика', slug: 'kosmetika' },
       { name: 'Сумки', slug: 'sumki' },
     ],
-    skipDuplicates: true,
   })
 
   // Создаём тестовые товары
