@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int         @id @default(autoincrement())
+  barcode     String?     @unique
+  name        String
+  description String?
+  price       Float
+  category    String      @default("Без категории")
+  imageUrl    String?
+  stock       Int         @default(0)
+  isActive    Boolean     @default(true)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  orderItems  OrderItem[]
+}
+
+model Order {
+  id           Int           @id @default(autoincrement())
+  customerName String
+  phone        String
+  address      String?
+  comment      String?
+  status       String        @default("NEW")
+  total        Float
+  items        OrderItem[]
+  messages     ChatMessage[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model OrderItem {
+  id        Int     @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Float
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model ChatMessage {
+  id        Int      @id @default(autoincrement())
+  orderId   Int?
+  sender    String
+  text      String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  order     Order?   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  slug String @unique
+}
