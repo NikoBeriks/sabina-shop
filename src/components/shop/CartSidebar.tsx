@@ -7,8 +7,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect } from 'react'
 
-const FREE_DELIVERY_THRESHOLD = 3000
-const DELIVERY_FEE = 500
+const FREE_DELIVERY_THRESHOLD = 1500
+const DELIVERY_FEE = 150
 
 export default function CartSidebar({
   open,
@@ -250,7 +250,7 @@ export default function CartSidebar({
               </Link>
 
               <div className="text-center text-[11px] text-neutral-400">
-                🔒 Оплата при получении или Kaspi QR · Доставка от 30 мин
+                🔒 Оплата при получении или СБП / картой · Доставка от 30 мин
               </div>
             </div>
           )}

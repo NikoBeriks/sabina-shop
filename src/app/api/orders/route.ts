@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
     })
 
     const ownerPhone = process.env.OWNER_WHATSAPP_NUMBER || process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '79287144816'
-    console.log(`\n📢 [НОВЫЙ ЗАКАЗ #${order.id}] Покупатель: ${order.customerName} (${order.phone}), Сумма: ${order.total} ₸`)
+    console.log(`\n📢 [НОВЫЙ ЗАКАЗ #${order.id}] Покупатель: ${order.customerName} (${order.phone}), Сумма: ${order.total} ₽`)
     console.log(`📲 Ссылка WhatsApp владельцу (${ownerPhone}): https://wa.me/${ownerPhone}\n`)
 
     // Автоматическая отправка заказа в Telegram владельцу

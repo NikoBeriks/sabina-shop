@@ -18,7 +18,7 @@ export function generateOrderNotificationText(order: {
   }>
 }): string {
   const itemsList = order.items
-    .map((item) => `• ${item.product.name} × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₸`)
+    .map((item) => `• ${item.product.name} × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₽`)
     .join('\n')
 
   return `🛍️ *Новый заказ #${order.id}*
@@ -31,7 +31,7 @@ ${order.comment ? `💬 *Комментарий:* ${order.comment}` : ''}
 📦 *Товары:*
 ${itemsList}
 
-💰 *Итого:* ${order.total.toFixed(0)} ₸
+💰 *Итого:* ${order.total.toFixed(0)} ₽
 
 Перейдите в админ-панель для подтверждения заказа.`
 }
@@ -54,7 +54,7 @@ export function generateCustomerToOwnerWhatsAppText(order: {
   }>
 }): string {
   const itemsList = order.items
-    .map((item) => `• ${item.product.name} × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₸`)
+    .map((item) => `• ${item.product.name} × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₽`)
     .join('\n')
 
   return `Здравствуйте! Я оформил(а) заказ в онлайн-магазине.
@@ -66,7 +66,7 @@ ${order.address ? `📍 *Адрес доставки:* ${order.address}\n` : ''}
 📦 *Состав заказа:*
 ${itemsList}
 
-💰 *Итого к оплате:* ${order.total.toFixed(0)} ₸
+💰 *Итого к оплате:* ${order.total.toFixed(0)} ₽
 
 Подтвердите, пожалуйста, заказ и отправьте реквизиты для оплаты.`
 }

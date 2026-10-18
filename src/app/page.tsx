@@ -228,7 +228,7 @@ export default function HomePage() {
               <h4 className="text-sm font-bold text-white uppercase tracking-wider mb-3">Сервис</h4>
               <ul className="space-y-2 text-sm">
                 <li>🚚 Экспресс-доставка от 30 минут</li>
-                <li>💳 Оплата при получении или Kaspi/QR</li>
+                <li>💳 Оплата при получении или СБП / картой</li>
                 <li>🥦 Гарантия свежести и контроль качества</li>
                 <li>📱 Быстрый заказ в WhatsApp</li>
               </ul>

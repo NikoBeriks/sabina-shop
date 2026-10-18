@@ -156,7 +156,7 @@ export default function ProductForm({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">
-                Цена (₸) <span className="text-red-500">*</span>
+                Цена (₽) <span className="text-red-500">*</span>
               </label>
               <input
                 required

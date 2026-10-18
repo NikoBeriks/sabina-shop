@@ -23,14 +23,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { generateWhatsAppUrl, generateCustomerToOwnerWhatsAppText } from '@/lib/whatsapp'
 
-const FREE_DELIVERY_THRESHOLD = 3000
-const DELIVERY_FEE = 500
+const FREE_DELIVERY_THRESHOLD = 1500
+const DELIVERY_FEE = 150
 
 const QUICK_TAGS = [
   'Позвонить за 15 минут',
   'Оставить у двери',
   'Код домофона #',
-  'Нужна сдача с 5 000 ₸',
+  'Нужна сдача с 1 000 ₽',
+  'Нужна сдача с 5 000 ₽',
 ]
 
 function applyPhoneMask(value: string): string {
@@ -52,7 +53,7 @@ export default function CheckoutPage() {
     address: '',
     comment: '',
     deliveryType: 'courier' as 'courier' | 'pickup',
-    paymentMethod: 'cash' as 'cash' | 'kaspi' | 'card',
+    paymentMethod: 'cash' as 'cash' | 'sbp' | 'card',
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [submitting, setSubmitting] = useState(false)
@@ -101,8 +102,8 @@ export default function CheckoutPage() {
         `Оплата: ${
           form.paymentMethod === 'cash'
             ? 'Наличными при получении'
-            : form.paymentMethod === 'kaspi'
-            ? 'Kaspi QR / Перевод'
+            : form.paymentMethod === 'sbp'
+            ? 'СБП / Перевод на карту'
             : 'Картой курьеру'
         }`,
       ]
@@ -227,7 +228,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="font-bold text-xs sm:text-sm text-neutral-900">Доставка курьером</div>
                   <div className="text-[11px] text-neutral-500 mt-0.5">
-                    {cartTotal >= FREE_DELIVERY_THRESHOLD ? 'Бесплатно' : '500 ₸ · от 30 мин'}
+                    {cartTotal >= FREE_DELIVERY_THRESHOLD ? 'Бесплатно' : `${DELIVERY_FEE} ₽ · от 30 мин`}
                   </div>
                 </button>
 
@@ -389,16 +390,16 @@ export default function CheckoutPage() {
 
                 <button
                   type="button"
-                  onClick={() => setForm({ ...form, paymentMethod: 'kaspi' })}
+                  onClick={() => setForm({ ...form, paymentMethod: 'sbp' })}
                   className={`p-3 rounded-2xl border text-left transition-all ${
-                    form.paymentMethod === 'kaspi'
+                    form.paymentMethod === 'sbp'
                       ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
                       : 'border-neutral-200 bg-white hover:border-neutral-300'
                   }`}
                 >
-                  <QrCode className="w-5 h-5 text-rose-600 mb-1.5" />
-                  <p className="text-xs font-bold text-neutral-900">Kaspi QR / Перевод</p>
-                  <p className="text-[10px] text-neutral-500">Удобно и быстро</p>
+                  <QrCode className="w-5 h-5 text-indigo-600 mb-1.5" />
+                  <p className="text-xs font-bold text-neutral-900">СБП / Перевод</p>
+                  <p className="text-[10px] text-neutral-500">По номеру телефона</p>
                 </button>
 
                 <button
@@ -493,7 +494,7 @@ export default function CheckoutPage() {
                   )}
                 </span>
                 <span className={`font-bold ${isFreeDelivery ? 'text-emerald-600' : 'text-neutral-800'}`}>
-                  {isFreeDelivery ? '0 ₸' : formatPrice(DELIVERY_FEE)}
+                  {isFreeDelivery ? '0 ₽' : formatPrice(DELIVERY_FEE)}
                 </span>
               </div>
 

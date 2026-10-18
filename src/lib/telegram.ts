@@ -24,7 +24,7 @@ export async function sendTelegramOrderNotification(order: {
   const itemsList = order.items
     .map(
       (item) =>
-        `• <b>${item.product.name}</b> × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₸`
+        `• <b>${item.product.name}</b> × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₽`
     )
     .join('\n')
 
@@ -35,7 +35,7 @@ ${order.address ? `📍 <b>Адрес доставки:</b> ${order.address}\n` 
 📦 <b>Состав заказа:</b>
 ${itemsList}
 
-💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>${order.total.toFixed(0)} ₸</b>`
+💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>${order.total.toFixed(0)} ₽</b>`
 
   const cleanCustomerPhone = order.phone.replace(/\D/g, '')
 

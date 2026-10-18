@@ -29,7 +29,7 @@ async function main() {
   const chatId = env.TELEGRAM_CHAT_ID;
 
   const itemsList = order.items
-    .map((item) => `• <b>${item.product.name}</b> × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₸`)
+    .map((item) => `• <b>${item.product.name}</b> × ${item.quantity} = ${(item.price * item.quantity).toFixed(0)} ₽`)
     .join('\n');
 
   const text = `🛒 <b>НОВЫЙ ЗАКАЗ #${order.id}</b>\n
@@ -39,7 +39,7 @@ ${order.address ? `📍 <b>Адрес доставки:</b> ${order.address}\n` 
 📦 <b>Состав заказа:</b>
 ${itemsList}
 
-💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>${order.total.toFixed(0)} ₸</b>`;
+💰 <b>ИТОГО К ОПЛАТЕ:</b> <b>${order.total.toFixed(0)} ₽</b>`;
 
   const cleanCustomerPhone = order.phone.replace(/\D/g, '');
 
