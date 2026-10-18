@@ -122,30 +122,85 @@ export function formatOrderWhatsAppMessage(order: OrderNotificationPayload): str
 export async function sendWhatsAppOrderNotification(
   order: OrderNotificationPayload
 ): Promise<WhatsAppSendResult> {
-  const token = process.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_CLOUD_API_TOKEN
-  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID
   const staffPhone =
     process.env.WHATSAPP_STAFF_PHONE ||
     process.env.WHATSAPP_EMPLOYEE_PHONE ||
     process.env.OWNER_WHATSAPP_NUMBER ||
-    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+    process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ||
+    '79287144816'
 
-  // Если учетные данные WhatsApp Cloud API еще не настроены в .env, логируем предупреждение без падения
-  if (!token || !phoneNumberId || !staffPhone) {
-    console.log('\n⚠️ [WhatsApp Cloud API] Автоматическое уведомление не отправлено:')
-    if (!token) console.log('   - Отсутствует WHATSAPP_ACCESS_TOKEN в .env')
-    if (!phoneNumberId) console.log('   - Отсутствует WHATSAPP_PHONE_NUMBER_ID в .env')
-    if (!staffPhone) console.log('   - Отсутствует WHATSAPP_STAFF_PHONE в .env')
-    console.log('💡 Настройте эти переменные в .env для автоматической отправки на номер кассира.\n')
-    return {
-      success: false,
-      skipped: true,
-      error: 'WhatsApp Cloud API credentials not configured in .env',
+  const messageBody = formatOrderWhatsAppMessage(order)
+  const cleanRecipientPhone = staffPhone.replace(/\D/g, '')
+
+  // 1. Попытка отправки через Green API (самый надежный сервис QR-кода в РФ)
+  const greenApiId = process.env.GREEN_API_ID_INSTANCE || process.env.GREEN_API_INSTANCE_ID
+  const greenApiToken = process.env.GREEN_API_TOKEN || process.env.GREEN_API_API_TOKEN_INSTANCE
+
+  if (greenApiId && greenApiToken) {
+    try {
+      const hostUrl = process.env.GREEN_API_URL || `https://${greenApiId.slice(0, 4)}.api.greenapi.com`
+      const greenUrl = `${hostUrl.replace(/\/$/, '')}/waInstance${greenApiId}/sendMessage/${greenApiToken}`
+      const greenRes = await fetch(greenUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatId: `${cleanRecipientPhone}@c.us`,
+          message: messageBody,
+        }),
+        signal: AbortSignal.timeout(7000),
+      })
+      const gData = await greenRes.json().catch(() => null)
+      if (greenRes.ok && gData?.idMessage) {
+        console.log(`\n✅ [Green API WhatsApp] Заказ #${order.id} успешно доставлен на +${cleanRecipientPhone}!`)
+        console.log(`   Message ID: ${gData.idMessage}\n`)
+        return { success: true, messageId: gData.idMessage, details: gData }
+      } else {
+        console.error(`\n❌ [Green API WhatsApp] Ошибка отправки заказа #${order.id}:`, gData)
+      }
+    } catch (gErr: any) {
+      console.error(`\n❌ [Green API WhatsApp] Ошибка связи с сервером:`, gErr.message)
     }
   }
 
-  const cleanRecipientPhone = staffPhone.replace(/\D/g, '')
-  const messageBody = formatOrderWhatsAppMessage(order)
+  // 2. Попытка отправки через локальный WhatsApp QR-шлюз (порт 3005)
+  try {
+    const gatewayRes = await fetch('http://localhost:3005/send', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        phone: cleanRecipientPhone,
+        text: messageBody,
+      }),
+      signal: AbortSignal.timeout(4000),
+    }).catch(() => null)
+
+    if (gatewayRes && gatewayRes.ok) {
+      const gData = await gatewayRes.json().catch(() => null)
+      if (gData?.success) {
+        console.log(`\n✅ [WhatsApp Gateway] Уведомление о заказе #${order.id} успешно доставлено кассиру (+${cleanRecipientPhone})!`)
+        return { success: true, messageId: gData.messageId, details: gData }
+      }
+    }
+  } catch (_) {
+    // Шлюз не запущен, переходим к Meta Cloud API
+  }
+
+  // 3. Если Green API и локальный шлюз не настроены, пробуем официальный Meta Cloud API
+  const token = process.env.WHATSAPP_ACCESS_TOKEN || process.env.WHATSAPP_CLOUD_API_TOKEN
+  const phoneNumberId = process.env.WHATSAPP_PHONE_NUMBER_ID
+
+  // Если ни один шлюз не настроен:
+  if (!token || !phoneNumberId) {
+    console.log('\n⚠️ [WhatsApp] Уведомление о заказе #' + order.id + ' не отправлено:')
+    console.log('   - Green API не настроен в .env (GREEN_API_ID_INSTANCE, GREEN_API_TOKEN)')
+    console.log('   - Или укажите WHATSAPP_ACCESS_TOKEN и WHATSAPP_PHONE_NUMBER_ID (Meta Cloud API)\n')
+    return {
+      success: false,
+      skipped: true,
+      error: 'WhatsApp credentials not configured (Green API or Meta Cloud API)',
+    }
+  }
+
   const apiVersion = process.env.WHATSAPP_API_VERSION || 'v19.0'
   const url = `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`
 

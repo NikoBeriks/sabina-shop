@@ -124,58 +124,88 @@ async function run() {
   const staffPhone = env.WHATSAPP_STAFF_PHONE || env.OWNER_WHATSAPP_NUMBER || '79287144816';
   const apiVersion = env.WHATSAPP_API_VERSION || 'v19.0';
 
+  const greenId = env.GREEN_API_ID_INSTANCE || env.GREEN_API_INSTANCE_ID;
+  const greenToken = env.GREEN_API_TOKEN || env.GREEN_API_API_TOKEN_INSTANCE;
+
   console.log('\n⚙️ ТЕКУЩИЕ ПАРАМЕТРЫ ИЗ .env:');
   console.log(`- WHATSAPP_STAFF_PHONE:      ${staffPhone || '❌ Не указан'}`);
-  console.log(`- WHATSAPP_PHONE_NUMBER_ID:  ${phoneNumberId ? phoneNumberId : '⚠️ Пусто (нужен ID из Meta)'}`);
-  console.log(`- WHATSAPP_ACCESS_TOKEN:     ${token ? '✅ Указан (длина: ' + token.length + ')' : '⚠️ Пусто (нужен токен Meta)'}`);
-  console.log(`- WHATSAPP_API_VERSION:      ${apiVersion}`);
-
-  if (!token || !phoneNumberId) {
-    console.log('\nℹ️ Для выполнения реальной отправки в WhatsApp укажите в файле .env:');
-    console.log('   WHATSAPP_PHONE_NUMBER_ID="..." (из раздела WhatsApp -> API Setup в Meta for Developers)');
-    console.log('   WHATSAPP_ACCESS_TOKEN="..." (временный токен или токен системного пользователя)');
-    console.log('\nФорматирование сообщений и серверная логика полностью готовы к работе!');
-    return;
-  }
+  console.log(`- GREEN_API_ID_INSTANCE:     ${greenId ? '✅ ' + greenId : '⚠️ Пусто'}`);
+  console.log(`- GREEN_API_TOKEN:           ${greenToken ? '✅ Указан (длина: ' + greenToken.length + ')' : '⚠️ Пусто'}`);
+  console.log(`- WHATSAPP_PHONE_NUMBER_ID:  ${phoneNumberId ? phoneNumberId : '⚠️ Пусто'}`);
+  console.log(`- WHATSAPP_ACCESS_TOKEN:     ${token ? '✅ Указан' : '⚠️ Пусто'}`);
 
   const cleanRecipientPhone = staffPhone.replace(/\D/g, '');
-  const url = `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`;
 
-  const payload = {
-    messaging_product: 'whatsapp',
-    recipient_type: 'individual',
-    to: cleanRecipientPhone,
-    type: 'text',
-    text: {
-      preview_url: false,
-      body: messageText,
-    },
-  };
-
-  console.log(`\n🚀 Отправка запроса в Meta Graph API (${url})...`);
-
-  try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    });
-
-    const data = await res.json();
-    console.log(`\nHTTP Статус: ${res.status} ${res.statusText}`);
-    console.log('Ответ Meta Graph API:');
-    console.log(JSON.stringify(data, null, 2));
-
-    if (res.ok && data?.messages?.[0]?.id) {
-      console.log(`\n✅ Сообщение успешно отправлено! WAMID: ${data.messages[0].id}`);
-    } else {
-      console.log('\n❌ Ошибка отправки от Meta API. Проверьте правильность токена и ID номера.');
+  // Тест Green API
+  if (greenId && greenToken) {
+    console.log(`\n🚀 Отправка тестового запроса через Green API (на ${cleanRecipientPhone})...`);
+    try {
+      const host = env.GREEN_API_URL || `https://${greenId.slice(0, 4)}.api.greenapi.com`;
+      const url = `${host.replace(/\/$/, '')}/waInstance${greenId}/sendMessage/${greenToken}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chatId: `${cleanRecipientPhone}@c.us`,
+          message: messageText,
+        }),
+      });
+      const data = await res.json();
+      console.log(`HTTP Статус: ${res.status}`);
+      console.log('Ответ Green API:', data);
+      if (res.ok && data?.idMessage) {
+        console.log(`\n✅ Сообщение успешно доставлено через Green API! ID: ${data.idMessage}`);
+        return;
+      }
+    } catch (err) {
+      console.error('Ошибка Green API:', err.message);
     }
-  } catch (err) {
-    console.error('\n❌ Сетевая ошибка при вызове Meta API:', err.message);
+  }
+
+  // Тест Meta Cloud API
+  if (token && phoneNumberId) {
+    const url = `https://graph.facebook.com/${apiVersion}/${phoneNumberId}/messages`;
+    const payload = {
+      messaging_product: 'whatsapp',
+      recipient_type: 'individual',
+      to: cleanRecipientPhone,
+      type: 'text',
+      text: {
+        preview_url: false,
+        body: messageText,
+      },
+    };
+
+    console.log(`\n🚀 Отправка запроса в Meta Graph API (${url})...`);
+
+    try {
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      console.log(`\nHTTP Статус: ${res.status} ${res.statusText}`);
+      console.log('Ответ Meta Graph API:');
+      console.log(JSON.stringify(data, null, 2));
+
+      if (res.ok && data?.messages?.[0]?.id) {
+        console.log(`\n✅ Сообщение успешно отправлено! WAMID: ${data.messages[0].id}`);
+        return;
+      }
+    } catch (err) {
+      console.error('\n❌ Сетевая ошибка при вызове Meta API:', err.message);
+    }
+  }
+
+  if (!greenId && !token) {
+    console.log('\nℹ️ Для выполнения отправки укажите в .env либо Green API, либо Meta API:');
+    console.log('   GREEN_API_ID_INSTANCE="..." и GREEN_API_TOKEN="..." (с сайта green-api.com)');
+    console.log('   или WHATSAPP_PHONE_NUMBER_ID="..." и WHATSAPP_ACCESS_TOKEN="..."');
   }
 }
 

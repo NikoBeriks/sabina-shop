@@ -10,6 +10,7 @@ const nextConfig = {
     ],
   },
   experimental: {
+    serverComponentsExternalPackages: ['@whiskeysockets/baileys', 'pino', 'qrcode'],
     outputFileTracingIncludes: {
       '/**': ['./prisma/dev.db'],
     },
