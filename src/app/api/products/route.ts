@@ -46,7 +46,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ products, total, page, limit })
   } catch (error) {
     console.error('Products GET error:', error)
-    return NextResponse.json({ error: 'Ошибка загрузки товаров' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Ошибка загрузки товаров', details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    )
   }
 }
 
