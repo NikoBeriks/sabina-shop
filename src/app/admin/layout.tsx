@@ -23,7 +23,7 @@ export default function AdminLayout({
           <Link href="/" className="flex items-center gap-2 group">
             <Store className="w-6 h-6 text-pink-400" />
             <div>
-              <p className="font-bold text-white">Sabina Shop</p>
+              <p className="font-bold text-white">Магазин Хавпачевых</p>
               <p className="text-xs text-gray-400">Админ-панель</p>
             </div>
           </Link>

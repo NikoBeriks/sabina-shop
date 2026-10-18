@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Search, ShoppingBag, MessageCircle, X, Sparkles } from 'lucide-react'
+import { Search, ShoppingBag, MessageSquare, X } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 import { formatPrice } from '@/lib/utils'
 
@@ -29,56 +29,54 @@ export default function Header({ search, onSearchChange, onOpenCart }: HeaderPro
 
   return (
     <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        isScrolled
-          ? 'bg-white/85 backdrop-blur-xl shadow-md border-b border-neutral-200/70 py-2.5'
-          : 'bg-white/95 backdrop-blur-md shadow-sm border-b border-neutral-100 py-3.5'
+      className={`sticky top-0 z-40 transition-colors duration-200 bg-white border-b ${
+        isScrolled ? 'border-neutral-300 shadow-xs' : 'border-neutral-200'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-3 md:gap-6">
-          {/* Brand Logo */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+        <div className="flex items-center justify-between gap-4 md:gap-8">
+          {/* Brand Logo - Strict Architectural Identity */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 group flex-shrink-0 transition-transform active:scale-95"
-            aria-label="Sabina Shop Главная"
+            className="flex items-center gap-3 group flex-shrink-0"
+            aria-label="Магазин Хавпачевых Главная"
           >
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-emerald shadow-sm group-hover:scale-105 transition-transform duration-300">
-              <Sparkles className="w-5 h-5 text-emerald-100 animate-pulse" />
+            <div className="w-9 h-9 bg-neutral-950 text-white flex items-center justify-center font-bold text-xs tracking-widest border border-neutral-950 rounded-none group-hover:bg-[#122a20] group-hover:border-[#122a20] transition-colors">
+              МХ
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-1.5 leading-none">
-                <span className="text-xl sm:text-2xl font-black tracking-tight text-neutral-900 font-sans">
-                  Sabina
+              <div className="flex items-center gap-2 leading-none">
+                <span className="text-lg sm:text-xl font-bold tracking-tight text-neutral-950 uppercase font-sans">
+                  Магазин
                 </span>
-                <span className="text-xl sm:text-2xl font-light tracking-tight text-emerald-600">
-                  Shop
+                <span className="text-lg sm:text-xl font-light tracking-tight text-neutral-500 uppercase">
+                  Хавпачевых
                 </span>
-                <span className="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full border border-emerald-200/60">
-                  Маркет
+                <span className="hidden sm:inline-block text-[10px] font-mono tracking-widest uppercase bg-neutral-100 text-neutral-700 px-1.5 py-0.5 border border-neutral-300 rounded-none">
+                  ГАСТРОНОМ
                 </span>
               </div>
-              <span className="text-[11px] text-neutral-400 font-medium hidden md:block">
-                Свежие продукты с доставкой
+              <span className="text-[10px] text-neutral-400 font-mono tracking-wider uppercase hidden md:block mt-0.5">
+                МАГАЗИН ХАВПАЧЕВЫХ &middot; ДОСТАВКА
               </span>
             </div>
           </Link>
 
-          {/* Search bar (desktop) */}
-          <div className="hidden md:flex flex-1 max-w-lg relative group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-emerald-600 transition-colors w-4 h-4 pointer-events-none" />
+          {/* Search bar (desktop) - Strict square shape */}
+          <div className="hidden md:flex flex-1 max-w-md relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 w-4 h-4 pointer-events-none" />
             <input
               type="text"
-              placeholder="Искать молоко, сыр, свежие фрукты, напитки..."
+              placeholder="Поиск продуктов по каталогу..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-10 pr-9 py-2.5 bg-neutral-100/80 hover:bg-neutral-100 focus:bg-white border border-transparent focus:border-emerald-500 rounded-full text-sm text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/15 transition-all"
+              className="w-full pl-10 pr-9 py-2.5 bg-neutral-50 hover:bg-neutral-100/70 focus:bg-white border border-neutral-300 focus:border-neutral-900 rounded-none text-xs sm:text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none transition-colors"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => onSearchChange('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-200/60 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-900 rounded-none transition-colors"
                 title="Очистить поиск"
               >
                 <X className="w-3.5 h-3.5" />
@@ -86,42 +84,37 @@ export default function Header({ search, onSearchChange, onOpenCart }: HeaderPro
             )}
           </div>
 
-          {/* Action buttons */}
+          {/* Action buttons - Sharp square geometry */}
           <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-            {/* Support / WhatsApp Chat button */}
+            {/* Support link */}
             <Link
               href="/chat"
-              className="flex items-center gap-2 px-3 sm:px-3.5 py-2 rounded-full border border-neutral-200/80 hover:border-emerald-300 text-neutral-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition-all text-xs sm:text-sm font-medium"
-              title="Чат поддержки и связь с оператором"
+              className="flex items-center gap-2 px-3 sm:px-3.5 py-2.5 border border-neutral-300 hover:border-neutral-900 text-neutral-800 hover:bg-neutral-50 transition-colors text-xs font-semibold uppercase tracking-wider rounded-none"
+              title="Чат поддержки"
             >
-              <div className="relative">
-                <MessageCircle className="w-4 h-4 text-emerald-600" />
-                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-500 rounded-full ring-2 ring-white animate-pulse" />
-              </div>
+              <MessageSquare className="w-3.5 h-3.5 text-neutral-600" />
               <span className="hidden sm:inline">Помощь</span>
             </Link>
 
-            {/* Cart trigger button */}
+            {/* Cart trigger button - Strict, square */}
             <button
               onClick={onOpenCart}
-              className={`relative flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-full font-semibold text-xs sm:text-sm transition-all duration-200 active:scale-95 shadow-sm ${
+              className={`relative flex items-center gap-2.5 px-4 py-2.5 font-bold text-xs uppercase tracking-wider transition-colors duration-150 rounded-none border ${
                 mounted && totalItems > 0
-                  ? 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-emerald hover:shadow-lg'
-                  : 'bg-neutral-900 hover:bg-neutral-800 text-white'
+                  ? 'bg-[#102218] hover:bg-[#183425] text-white border-[#102218]'
+                  : 'bg-neutral-950 hover:bg-neutral-800 text-white border-neutral-950'
               }`}
               aria-label="Открыть корзину"
             >
-              <div className="relative flex items-center justify-center">
-                <ShoppingBag className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-                {mounted && totalItems > 0 && (
-                  <span className="absolute -top-2 -right-2.5 bg-rose-500 text-white text-[11px] font-black w-4.5 h-4.5 min-w-[18px] px-1 rounded-full flex items-center justify-center ring-2 ring-white animate-scale-in">
-                    {totalItems > 99 ? '99+' : totalItems}
-                  </span>
-                )}
-              </div>
-              <span className="hidden sm:inline font-medium">Корзина</span>
+              <ShoppingBag className="w-4 h-4" />
+              <span className="hidden sm:inline">Корзина</span>
               {mounted && totalItems > 0 && (
-                <span className="hidden md:inline pl-1 border-l border-white/30 text-xs font-bold">
+                <span className="bg-white text-neutral-950 font-mono text-[11px] font-bold px-1.5 py-0.5 leading-none rounded-none">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+              {mounted && totalItems > 0 && (
+                <span className="hidden md:inline pl-1.5 border-l border-white/25 font-mono text-xs font-semibold">
                   {formatPrice(totalPrice)}
                 </span>
               )}
@@ -131,20 +124,20 @@ export default function Header({ search, onSearchChange, onOpenCart }: HeaderPro
 
         {/* Mobile Search Input */}
         <div className="md:hidden mt-3">
-          <div className="relative group">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 group-focus-within:text-emerald-600 transition-colors w-4 h-4 pointer-events-none" />
+          <div className="relative">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 w-4 h-4 pointer-events-none" />
             <input
               type="text"
-              placeholder="Поиск продуктов..."
+              placeholder="Поиск по названию или категории..."
               value={search}
               onChange={(e) => onSearchChange(e.target.value)}
-              className="w-full pl-10 pr-9 py-2 bg-neutral-100 hover:bg-neutral-100 focus:bg-white border border-transparent focus:border-emerald-500 rounded-full text-sm text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-4 focus:ring-emerald-500/15 transition-all"
+              className="w-full pl-10 pr-9 py-2 bg-neutral-50 hover:bg-neutral-100 focus:bg-white border border-neutral-300 focus:border-neutral-900 rounded-none text-xs text-neutral-900 placeholder-neutral-400 focus:outline-none transition-colors"
             />
             {search && (
               <button
                 type="button"
                 onClick={() => onSearchChange('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-600 rounded-full hover:bg-neutral-200 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-neutral-400 hover:text-neutral-900 rounded-none"
                 title="Очистить"
               >
                 <X className="w-3.5 h-3.5" />
@@ -156,3 +149,4 @@ export default function Header({ search, onSearchChange, onOpenCart }: HeaderPro
     </header>
   )
 }
+

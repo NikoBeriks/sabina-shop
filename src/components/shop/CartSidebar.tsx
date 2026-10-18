@@ -1,6 +1,6 @@
 'use client'
 
-import { X, Minus, Plus, ShoppingBag, Trash2, Truck, ArrowRight, Sparkles } from 'lucide-react'
+import { X, Minus, Plus, ShoppingBag, Trash2, Truck, ArrowRight } from 'lucide-react'
 import { useCartStore } from '@/store/cart'
 import { formatPrice } from '@/lib/utils'
 import Image from 'next/image'
@@ -40,37 +40,39 @@ export default function CartSidebar({
   const finalTotal = total + (items.length > 0 ? deliveryCost : 0)
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
+    <div className="fixed inset-0 z-50 overflow-hidden font-sans">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-neutral-900/60 backdrop-blur-xs transition-opacity duration-300"
+        className="fixed inset-0 bg-neutral-950/70 transition-opacity duration-200"
         onClick={onClose}
         aria-hidden="true"
       />
 
-      {/* Slide-over panel */}
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-10">
-        <div className="w-screen max-w-md bg-white shadow-2xl flex flex-col font-sans">
+      {/* Slide-over panel - Sharp rectangular */}
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-8">
+        <div className="w-screen max-w-md bg-white border-l border-neutral-300 shadow-2xl flex flex-col rounded-none">
           {/* Header */}
-          <div className="px-5 py-4 border-b border-neutral-100 flex items-center justify-between bg-white/80 backdrop-blur-md sticky top-0 z-10">
+          <div className="px-5 py-4 border-b border-neutral-200 flex items-center justify-between bg-white sticky top-0 z-10">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-                <ShoppingBag className="w-5 h-5" />
+              <div className="w-8 h-8 rounded-none bg-neutral-950 text-white flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4" />
               </div>
               <div>
-                <h2 className="text-lg font-black text-neutral-900 leading-none">Корзина</h2>
-                <span className="text-xs text-neutral-400 font-medium">
-                  {items.length > 0 ? `${items.length} поз. в заказе` : 'Пока пуста'}
+                <h2 className="text-base font-bold text-neutral-950 uppercase tracking-tight leading-none">
+                  Корзина
+                </h2>
+                <span className="text-[11px] font-mono text-neutral-400 mt-1 block">
+                  {items.length > 0 ? `ПОЗИЦИЙ В ЗАКАЗЕ: ${items.length}` : 'ЗАКАЗ ПУСТ'}
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-2">
               {items.length > 0 && (
                 <button
                   type="button"
                   onClick={clearCart}
-                  className="text-xs text-neutral-400 hover:text-rose-600 px-2 py-1 rounded-lg hover:bg-rose-50 transition-colors"
+                  className="text-[11px] font-mono uppercase text-neutral-400 hover:text-neutral-900 px-2 py-1 transition-colors"
                   title="Очистить корзину"
                 >
                   Очистить
@@ -79,36 +81,35 @@ export default function CartSidebar({
               <button
                 type="button"
                 onClick={onClose}
-                className="p-2 text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100 rounded-full transition-colors"
+                className="w-8 h-8 border border-neutral-300 hover:border-neutral-900 text-neutral-700 hover:text-neutral-950 flex items-center justify-center rounded-none transition-colors"
                 aria-label="Закрыть"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
             </div>
           </div>
 
-          {/* Free Delivery Progress Bar */}
+          {/* Free Delivery Bar - Sharp */}
           {items.length > 0 && (
-            <div className="bg-emerald-50/70 border-b border-emerald-100/80 px-5 py-3">
-              <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-                <span className="flex items-center gap-1.5 text-emerald-900">
-                  <Truck className="w-4 h-4 text-emerald-600" />
+            <div className="bg-neutral-50 border-b border-neutral-200 px-5 py-3">
+              <div className="flex items-center justify-between text-xs font-semibold mb-2">
+                <span className="flex items-center gap-1.5 text-neutral-800 font-mono text-[11px] uppercase">
+                  <Truck className="w-3.5 h-3.5 text-neutral-600" />
                   {isFreeDelivery ? (
-                    <span className="text-emerald-700 font-bold">🎉 Доставка бесплатна!</span>
+                    <span className="text-neutral-900 font-bold">БЕСПЛАТНАЯ ДОСТАВКА</span>
                   ) : (
                     <span>
-                      До бесплатной доставки ещё{' '}
-                      <strong className="text-emerald-700">{formatPrice(remainingForFreeDelivery)}</strong>
+                      ДО БЕСПЛАТНОЙ ДОСТАВКИ: <strong className="text-neutral-950">{formatPrice(remainingForFreeDelivery)}</strong>
                     </span>
                   )}
                 </span>
-                <span className="text-emerald-600 font-mono text-[11px]">{deliveryProgress}%</span>
+                <span className="text-neutral-500 font-mono text-[11px]">{deliveryProgress}%</span>
               </div>
 
-              {/* Progress track */}
-              <div className="w-full h-2 bg-emerald-200/50 rounded-full overflow-hidden">
+              {/* Progress track - Sharp */}
+              <div className="w-full h-1.5 bg-neutral-200 rounded-none overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full transition-all duration-500 ease-out"
+                  className="h-full bg-neutral-900 rounded-none transition-all duration-300 ease-out"
                   style={{ width: `${deliveryProgress}%` }}
                 />
               </div>
@@ -119,30 +120,31 @@ export default function CartSidebar({
           <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3">
             {items.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center py-12 px-4">
-                <div className="w-24 h-24 rounded-3xl bg-neutral-100 flex items-center justify-center mb-4 text-4xl shadow-inner">
-                  🧺
+                <div className="w-16 h-16 border border-neutral-300 bg-neutral-50 flex items-center justify-center mb-4 text-neutral-400">
+                  <ShoppingBag className="w-8 h-8 opacity-40" />
                 </div>
-                <h3 className="text-lg font-bold text-neutral-900 mb-1">Ваша корзина пуста</h3>
-                <p className="text-xs text-neutral-500 max-w-xs mb-6 leading-relaxed">
-                  Выберите вкусные и свежие продукты из нашего каталога — мы бережно соберем и доставим их за 30 минут!
+                <h3 className="text-base font-bold text-neutral-950 uppercase tracking-tight mb-1">
+                  Корзина пуста
+                </h3>
+                <p className="text-xs text-neutral-500 max-w-xs mb-6 leading-relaxed font-sans">
+                  Выберите необходимые позиции из каталога &mdash; мы бережно соберём и доставим их в течение 30 минут.
                 </p>
                 <button
                   type="button"
                   onClick={onClose}
-                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-2xl font-bold text-xs sm:text-sm active:scale-95 transition-all shadow-emerald shadow-sm"
+                  className="bg-neutral-950 hover:bg-neutral-800 text-white px-6 py-3 rounded-none font-bold text-xs uppercase tracking-wider transition-colors border border-neutral-950"
                 >
-                  <Sparkles className="w-4 h-4 text-emerald-200" />
-                  <span>Перейти к покупкам</span>
+                  В каталог товаров &darr;
                 </button>
               </div>
             ) : (
               items.map((item) => (
                 <div
                   key={item.id}
-                  className="flex gap-3 p-3 bg-neutral-50/70 hover:bg-neutral-50 rounded-2xl border border-neutral-100 transition-colors"
+                  className="flex gap-3 p-3 bg-white hover:bg-neutral-50 border border-neutral-200 rounded-none transition-colors"
                 >
                   {/* Thumbnail */}
-                  <div className="relative w-16 h-16 sm:w-20 sm:h-20 flex-shrink-0 bg-white rounded-xl overflow-hidden border border-neutral-200/60 flex items-center justify-center">
+                  <div className="relative w-16 h-16 flex-shrink-0 bg-[#f8f8f6] rounded-none border border-neutral-200 overflow-hidden flex items-center justify-center">
                     {item.imageUrl ? (
                       <Image
                         src={item.imageUrl}
@@ -152,53 +154,53 @@ export default function CartSidebar({
                         unoptimized
                       />
                     ) : (
-                      <span className="text-2xl select-none">🛒</span>
+                      <span className="font-mono text-xs font-bold text-neutral-400">SS</span>
                     )}
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div>
-                      <h4 className="font-bold text-neutral-900 text-xs sm:text-sm line-clamp-1 leading-snug">
+                      <h4 className="font-bold text-neutral-950 text-xs sm:text-sm line-clamp-1 leading-snug uppercase tracking-tight">
                         {item.name}
                       </h4>
-                      <p className="text-emerald-700 font-extrabold text-xs sm:text-sm mt-0.5">
+                      <p className="text-neutral-900 font-mono font-bold text-xs mt-0.5">
                         {formatPrice(item.price)}
                       </p>
                     </div>
 
-                    {/* Stepper & Delete */}
-                    <div className="flex items-center justify-between gap-2 mt-2 pt-1">
-                      <div className="flex items-center bg-white border border-neutral-200 rounded-xl p-0.5 gap-1 shadow-xs">
+                    {/* Stepper & Delete - Square */}
+                    <div className="flex items-center justify-between gap-2 mt-2 pt-1 border-t border-neutral-100">
+                      <div className="flex items-center border border-neutral-300 rounded-none bg-white">
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-6 h-6 flex items-center justify-center rounded-lg text-neutral-600 hover:bg-neutral-100 active:scale-90 transition-transform"
+                          className="w-6 h-6 flex items-center justify-center text-neutral-700 hover:bg-neutral-100 rounded-none border-r border-neutral-200"
                           title="Уменьшить"
                         >
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-6 text-center font-bold text-xs text-neutral-800">
+                        <span className="w-6 text-center font-mono font-bold text-xs text-neutral-900">
                           {item.quantity}
                         </span>
                         <button
                           type="button"
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-6 h-6 flex items-center justify-center rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 active:scale-90 transition-transform"
+                          className="w-6 h-6 flex items-center justify-center bg-neutral-950 text-white hover:bg-neutral-800 rounded-none"
                           title="Увеличить"
                         >
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
 
-                      <div className="flex items-center gap-2">
-                        <span className="text-xs font-bold text-neutral-700 font-mono">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-mono font-bold text-neutral-950">
                           {formatPrice(item.price * item.quantity)}
                         </span>
                         <button
                           type="button"
                           onClick={() => removeItem(item.id)}
-                          className="text-neutral-400 hover:text-rose-500 hover:bg-rose-50 p-1.5 rounded-lg transition-colors"
+                          className="text-neutral-400 hover:text-neutral-900 p-1 rounded-none transition-colors"
                           title="Удалить"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -213,44 +215,37 @@ export default function CartSidebar({
 
           {/* Footer Summary & Checkout */}
           {items.length > 0 && (
-            <div className="border-t border-neutral-200/70 p-5 bg-white space-y-3 shadow-lg">
+            <div className="border-t border-neutral-300 p-5 bg-white space-y-3">
               {/* Cost Breakdown */}
               <div className="space-y-1.5 text-xs">
-                <div className="flex items-center justify-between text-neutral-500">
-                  <span>Товары ({items.reduce((s, i) => s + i.quantity, 0)} шт.)</span>
-                  <span className="font-semibold text-neutral-800">{formatPrice(total)}</span>
+                <div className="flex items-center justify-between text-neutral-500 font-mono">
+                  <span>ТОВАРЫ ({items.reduce((s, i) => s + i.quantity, 0)} ШТ)</span>
+                  <span className="font-bold text-neutral-900">{formatPrice(total)}</span>
                 </div>
-                <div className="flex items-center justify-between text-neutral-500">
-                  <span className="flex items-center gap-1">
-                    <span>Доставка</span>
-                    {isFreeDelivery && (
-                      <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded font-bold">
-                        АКЦИЯ
-                      </span>
-                    )}
-                  </span>
-                  <span className={`font-semibold ${isFreeDelivery ? 'text-emerald-600' : 'text-neutral-800'}`}>
-                    {isFreeDelivery ? 'Бесплатно' : formatPrice(DELIVERY_FEE)}
+                <div className="flex items-center justify-between text-neutral-500 font-mono">
+                  <span>ДОСТАВКА</span>
+                  <span className="font-bold text-neutral-900">
+                    {isFreeDelivery ? 'БЕСПЛАТНО' : formatPrice(DELIVERY_FEE)}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-base font-black text-neutral-900 pt-2 border-t border-neutral-100">
+                <div className="flex items-center justify-between text-sm font-bold text-neutral-950 pt-2 border-t border-neutral-200 uppercase tracking-tight">
                   <span>Итого к оплате</span>
-                  <span className="text-xl text-emerald-700">{formatPrice(finalTotal)}</span>
+                  <span className="text-lg font-mono font-black text-neutral-950">{formatPrice(finalTotal)}</span>
                 </div>
               </div>
 
-              {/* Checkout Button */}
+              {/* Checkout Button - Sharp Square */}
               <Link
                 href="/checkout"
                 onClick={onClose}
-                className="w-full flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-center py-3.5 rounded-2xl font-bold text-sm sm:text-base transition-all duration-200 active:scale-95 shadow-emerald shadow-md"
+                className="w-full flex items-center justify-center gap-2 bg-neutral-950 hover:bg-neutral-800 text-white text-center py-3.5 rounded-none font-bold text-xs uppercase tracking-wider transition-colors border border-neutral-950 active:translate-y-px"
               >
                 <span>Перейти к оформлению</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
 
-              <div className="text-center text-[11px] text-neutral-400">
-                🔒 Оплата при получении или СБП / картой · Доставка от 30 мин
+              <div className="text-center font-mono text-[10px] uppercase tracking-wider text-neutral-400">
+                ОПЛАТА ПРИ ПОЛУЧЕНИИ &middot; СБП &middot; КАРТОЙ
               </div>
             </div>
           )}
@@ -259,3 +254,4 @@ export default function CartSidebar({
     </div>
   )
 }
+

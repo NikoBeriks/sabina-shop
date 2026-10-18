@@ -121,6 +121,7 @@ export default function CheckoutPage() {
           phone: form.phone.replace(/\D/g, ''),
           address: fullAddress,
           comment: fullComment,
+          deliveryFee: deliveryCost,
           items: items.map((item) => ({
             productId: item.id,
             quantity: item.quantity,
@@ -133,16 +134,8 @@ export default function CheckoutPage() {
       const order = await res.json()
       clearCart()
 
-      const waPhone = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '79287144816'
-      const waUrl = generateWhatsAppUrl(waPhone, generateCustomerToOwnerWhatsAppText(order))
-
-      // Сначала переходим на страницу успеха заказа
+      // Переходим на страницу созданного заказа (уведомление кассиру отправляется автоматически с бэкенда)
       router.push(`/order/${order.id}`)
-
-      // И перенаправляем в WhatsApp с чеком заказа
-      setTimeout(() => {
-        window.location.href = waUrl
-      }, 500)
     } catch (e) {
       console.error(e)
       alert('Произошла ошибка при отправке заказа. Пожалуйста, попробуйте еще раз.')
@@ -161,40 +154,40 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-neutral-50 flex flex-col items-center justify-center p-6 text-center font-sans">
-        <div className="w-24 h-24 rounded-3xl bg-neutral-100 flex items-center justify-center mb-5 text-4xl shadow-inner">
-          🧺
+      <div className="min-h-screen bg-[#fbfbfa] flex flex-col items-center justify-center p-6 text-center font-sans">
+        <div className="w-16 h-16 border border-neutral-300 bg-white flex items-center justify-center mb-5 text-neutral-400">
+          <ShoppingBag className="w-8 h-8 opacity-40" />
         </div>
-        <h2 className="text-2xl font-black text-neutral-900 mb-2">Корзина пуста</h2>
-        <p className="text-sm text-neutral-500 mb-8 max-w-sm">
-          Добавьте свежие продукты из каталога Sabina Shop, чтобы оформить заказ с быстрой доставкой.
+        <h2 className="text-xl font-bold text-neutral-950 uppercase tracking-tight mb-2">Корзина пуста</h2>
+        <p className="text-xs text-neutral-500 mb-8 max-w-sm">
+          Добавьте позиции из каталога «Магазина Хавпачевых» для оформления быстрой доставки курьером.
         </p>
         <Link
           href="/"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3.5 rounded-2xl font-bold text-sm transition-all active:scale-95 shadow-emerald shadow-sm"
+          className="bg-neutral-950 hover:bg-neutral-800 text-white px-8 py-3.5 rounded-none font-bold text-xs uppercase tracking-wider transition-colors border border-neutral-950"
         >
-          Вернуться в каталог
+          Вернуться в каталог &darr;
         </Link>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 font-sans text-neutral-900 pb-16">
+    <div className="min-h-screen bg-[#fcfcfb] font-sans text-neutral-900 pb-16">
       {/* Header */}
-      <header className="bg-white/90 backdrop-blur-md border-b border-neutral-200/80 sticky top-0 z-40 shadow-xs">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+      <header className="bg-white border-b border-neutral-300 sticky top-0 z-40">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-neutral-600 hover:text-emerald-700 font-semibold text-sm transition-colors"
+            className="inline-flex items-center gap-2 text-neutral-700 hover:text-neutral-950 font-mono uppercase text-xs tracking-wider transition-colors"
           >
-            <div className="w-8 h-8 rounded-full bg-neutral-100 hover:bg-emerald-50 flex items-center justify-center transition-colors">
-              <ArrowLeft className="w-4 h-4" />
+            <div className="w-7 h-7 border border-neutral-300 flex items-center justify-center rounded-none bg-white">
+              <ArrowLeft className="w-3.5 h-3.5" />
             </div>
             <span>В магазин</span>
           </Link>
           <div className="flex items-center gap-2">
-            <span className="text-lg font-black text-neutral-900">Оформление заказа</span>
+            <span className="text-base font-bold text-neutral-950 uppercase tracking-tight font-sans">Оформление заказа</span>
           </div>
           <div className="w-8" />
         </div>
@@ -206,28 +199,28 @@ export default function CheckoutPage() {
         <div className="md:col-span-7 space-y-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Delivery Method Selection */}
-            <div className="bg-white rounded-3xl p-6 shadow-xs border border-neutral-200/70 space-y-4">
-              <h2 className="text-base font-black text-neutral-900 flex items-center gap-2">
-                <Truck className="w-5 h-5 text-emerald-600" />
-                <span>1. Способ получения</span>
+            <div className="bg-white rounded-none p-6 border border-neutral-300 space-y-4">
+              <h2 className="text-sm font-bold text-neutral-950 uppercase tracking-wider flex items-center gap-2 font-mono">
+                <Truck className="w-4 h-4 text-neutral-600" />
+                <span>01 / Способ получения</span>
               </h2>
 
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, deliveryType: 'courier' })}
-                  className={`p-3.5 rounded-2xl border text-left transition-all duration-200 ${
+                  className={`p-3.5 rounded-none border text-left transition-colors ${
                     form.deliveryType === 'courier'
-                      ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
-                      : 'border-neutral-200 hover:border-neutral-300 bg-white'
+                      ? 'border-neutral-950 bg-neutral-950 text-white'
+                      : 'border-neutral-300 hover:border-neutral-900 bg-white text-neutral-900'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <Truck className={`w-5 h-5 ${form.deliveryType === 'courier' ? 'text-emerald-700' : 'text-neutral-500'}`} />
-                    {form.deliveryType === 'courier' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                    <Truck className={`w-4 h-4 ${form.deliveryType === 'courier' ? 'text-white' : 'text-neutral-600'}`} />
+                    {form.deliveryType === 'courier' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
                   </div>
-                  <div className="font-bold text-xs sm:text-sm text-neutral-900">Доставка курьером</div>
-                  <div className="text-[11px] text-neutral-500 mt-0.5">
+                  <div className="font-bold text-xs uppercase tracking-wider">Курьер</div>
+                  <div className={`text-[11px] font-mono mt-0.5 ${form.deliveryType === 'courier' ? 'text-neutral-300' : 'text-neutral-500'}`}>
                     {cartTotal >= FREE_DELIVERY_THRESHOLD ? 'Бесплатно' : `${DELIVERY_FEE} ₽ · от 30 мин`}
                   </div>
                 </button>
@@ -235,32 +228,34 @@ export default function CheckoutPage() {
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, deliveryType: 'pickup' })}
-                  className={`p-3.5 rounded-2xl border text-left transition-all duration-200 ${
+                  className={`p-3.5 rounded-none border text-left transition-colors ${
                     form.deliveryType === 'pickup'
-                      ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
-                      : 'border-neutral-200 hover:border-neutral-300 bg-white'
+                      ? 'border-neutral-950 bg-neutral-950 text-white'
+                      : 'border-neutral-300 hover:border-neutral-900 bg-white text-neutral-900'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <Store className={`w-5 h-5 ${form.deliveryType === 'pickup' ? 'text-emerald-700' : 'text-neutral-500'}`} />
-                    {form.deliveryType === 'pickup' && <CheckCircle2 className="w-4 h-4 text-emerald-600" />}
+                    <Store className={`w-4 h-4 ${form.deliveryType === 'pickup' ? 'text-white' : 'text-neutral-600'}`} />
+                    {form.deliveryType === 'pickup' && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />}
                   </div>
-                  <div className="font-bold text-xs sm:text-sm text-neutral-900">Самовывоз</div>
-                  <div className="text-[11px] text-neutral-500 mt-0.5">Бесплатно · готов через 15 мин</div>
+                  <div className="font-bold text-xs uppercase tracking-wider">Самовывоз</div>
+                  <div className={`text-[11px] font-mono mt-0.5 ${form.deliveryType === 'pickup' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                    Бесплатно · 15 мин
+                  </div>
                 </button>
               </div>
             </div>
 
             {/* Customer Details */}
-            <div className="bg-white rounded-3xl p-6 shadow-xs border border-neutral-200/70 space-y-4">
-              <h2 className="text-base font-black text-neutral-900 flex items-center gap-2">
-                <User className="w-5 h-5 text-emerald-600" />
-                <span>2. Контактные данные</span>
+            <div className="bg-white rounded-none p-6 border border-neutral-300 space-y-4">
+              <h2 className="text-sm font-bold text-neutral-950 uppercase tracking-wider flex items-center gap-2 font-mono">
+                <User className="w-4 h-4 text-neutral-600" />
+                <span>02 / Контактные данные</span>
               </h2>
 
               {/* Name */}
               <div>
-                <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider mb-1.5">
                   Ваше имя <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -273,17 +268,17 @@ export default function CheckoutPage() {
                       setForm({ ...form, name: e.target.value })
                       setErrors({ ...errors, name: '' })
                     }}
-                    className={`w-full pl-10 pr-4 py-3 bg-neutral-50 focus:bg-white border rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/15 transition-all ${
-                      errors.name ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-200 focus:border-emerald-500'
+                    className={`w-full pl-10 pr-4 py-2.5 bg-neutral-50 focus:bg-white border rounded-none text-xs sm:text-sm focus:outline-none transition-colors ${
+                      errors.name ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-300 focus:border-neutral-950'
                     }`}
                   />
                 </div>
-                {errors.name && <p className="text-rose-500 text-xs mt-1.5 font-medium">{errors.name}</p>}
+                {errors.name && <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.name}</p>}
               </div>
 
               {/* Phone */}
               <div>
-                <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider mb-1.5">
                   Номер телефона <span className="text-rose-500">*</span>
                 </label>
                 <div className="relative">
@@ -296,21 +291,21 @@ export default function CheckoutPage() {
                       setForm({ ...form, phone: applyPhoneMask(e.target.value) })
                       setErrors({ ...errors, phone: '' })
                     }}
-                    className={`w-full pl-10 pr-4 py-3 bg-neutral-50 focus:bg-white border rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/15 transition-all ${
-                      errors.phone ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-200 focus:border-emerald-500'
+                    className={`w-full pl-10 pr-4 py-2.5 bg-neutral-50 focus:bg-white border rounded-none text-xs sm:text-sm font-mono focus:outline-none transition-colors ${
+                      errors.phone ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-300 focus:border-neutral-950'
                     }`}
                   />
                 </div>
-                {errors.phone && <p className="text-rose-500 text-xs mt-1.5 font-medium">{errors.phone}</p>}
-                <p className="text-[11px] text-neutral-400 mt-1">
-                  На этот номер придет подтверждение и чек заказа в WhatsApp.
+                {errors.phone && <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.phone}</p>}
+                <p className="text-[11px] font-mono text-neutral-400 mt-1 uppercase">
+                  На этот номер будет направлено подтверждение и сформирован чек в WhatsApp.
                 </p>
               </div>
 
               {/* Delivery Address if courier */}
               {form.deliveryType === 'courier' && (
                 <div>
-                  <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+                  <label className="block text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider mb-1.5">
                     Адрес доставки <span className="text-rose-500">*</span>
                   </label>
                   <div className="relative">
@@ -323,30 +318,30 @@ export default function CheckoutPage() {
                         setForm({ ...form, address: e.target.value })
                         setErrors({ ...errors, address: '' })
                       }}
-                      className={`w-full pl-10 pr-4 py-3 bg-neutral-50 focus:bg-white border rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/15 transition-all ${
-                        errors.address ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-200 focus:border-emerald-500'
+                      className={`w-full pl-10 pr-4 py-2.5 bg-neutral-50 focus:bg-white border rounded-none text-xs sm:text-sm focus:outline-none transition-colors ${
+                        errors.address ? 'border-rose-400 focus:border-rose-500' : 'border-neutral-300 focus:border-neutral-950'
                       }`}
                     />
                   </div>
                   {errors.address && (
-                    <p className="text-rose-500 text-xs mt-1.5 font-medium">{errors.address}</p>
+                    <p className="text-rose-600 text-xs mt-1.5 font-medium">{errors.address}</p>
                   )}
                 </div>
               )}
 
               {/* Comment with quick tags */}
               <div>
-                <label className="block text-xs font-bold text-neutral-700 uppercase tracking-wider mb-1.5">
+                <label className="block text-xs font-mono font-bold text-neutral-800 uppercase tracking-wider mb-1.5">
                   Комментарий к заказу (необязательно)
                 </label>
                 <div className="relative mb-2">
-                  <MessageSquare className="absolute left-3.5 top-3.5 text-neutral-400 w-4 h-4" />
+                  <MessageSquare className="absolute left-3.5 top-3 text-neutral-400 w-4 h-4" />
                   <textarea
-                    placeholder="Например: спелые авокадо, позвонить за 15 минут..."
+                    placeholder="Например: спелые авокадо, код домофона #42..."
                     value={form.comment}
                     onChange={(e) => setForm({ ...form, comment: e.target.value })}
                     rows={2}
-                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 focus:bg-white border border-neutral-200 focus:border-emerald-500 rounded-2xl text-sm focus:outline-none focus:ring-4 focus:ring-emerald-500/15 resize-none transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 bg-neutral-50 focus:bg-white border border-neutral-300 focus:border-neutral-950 rounded-none text-xs sm:text-sm focus:outline-none resize-none transition-colors"
                   />
                 </div>
 
@@ -357,7 +352,7 @@ export default function CheckoutPage() {
                       key={tag}
                       type="button"
                       onClick={() => addQuickTag(tag)}
-                      className="text-[11px] bg-neutral-100 hover:bg-neutral-200 text-neutral-600 px-2.5 py-1 rounded-xl transition-colors font-medium active:scale-95"
+                      className="text-[10px] font-mono uppercase bg-neutral-100 hover:bg-neutral-200 text-neutral-700 px-2 py-1 rounded-none border border-neutral-200 transition-colors"
                     >
                       + {tag}
                     </button>
@@ -367,90 +362,90 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Method */}
-            <div className="bg-white rounded-3xl p-6 shadow-xs border border-neutral-200/70 space-y-4">
-              <h2 className="text-base font-black text-neutral-900 flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-emerald-600" />
-                <span>3. Способ оплаты</span>
+            <div className="bg-white rounded-none p-6 border border-neutral-300 space-y-4">
+              <h2 className="text-sm font-bold text-neutral-950 uppercase tracking-wider flex items-center gap-2 font-mono">
+                <CreditCard className="w-4 h-4 text-neutral-600" />
+                <span>03 / Способ оплаты</span>
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, paymentMethod: 'cash' })}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`p-3 rounded-none border text-left transition-colors ${
                     form.paymentMethod === 'cash'
-                      ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
-                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                      ? 'border-neutral-950 bg-neutral-950 text-white'
+                      : 'border-neutral-300 bg-white hover:border-neutral-900 text-neutral-900'
                   }`}
                 >
-                  <Banknote className="w-5 h-5 text-emerald-700 mb-1.5" />
-                  <p className="text-xs font-bold text-neutral-900">Наличными</p>
-                  <p className="text-[10px] text-neutral-500">При получении</p>
+                  <Banknote className="w-4 h-4 mb-2" />
+                  <p className="text-xs font-bold uppercase tracking-wider">Наличными</p>
+                  <p className={`text-[10px] font-mono mt-0.5 ${form.paymentMethod === 'cash' ? 'text-neutral-300' : 'text-neutral-500'}`}>При получении</p>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, paymentMethod: 'sbp' })}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`p-3 rounded-none border text-left transition-colors ${
                     form.paymentMethod === 'sbp'
-                      ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
-                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                      ? 'border-neutral-950 bg-neutral-950 text-white'
+                      : 'border-neutral-300 bg-white hover:border-neutral-900 text-neutral-900'
                   }`}
                 >
-                  <QrCode className="w-5 h-5 text-indigo-600 mb-1.5" />
-                  <p className="text-xs font-bold text-neutral-900">СБП / Перевод</p>
-                  <p className="text-[10px] text-neutral-500">По номеру телефона</p>
+                  <QrCode className="w-4 h-4 mb-2" />
+                  <p className="text-xs font-bold uppercase tracking-wider">СБП / Перевод</p>
+                  <p className={`text-[10px] font-mono mt-0.5 ${form.paymentMethod === 'sbp' ? 'text-neutral-300' : 'text-neutral-500'}`}>По номеру телефона</p>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setForm({ ...form, paymentMethod: 'card' })}
-                  className={`p-3 rounded-2xl border text-left transition-all ${
+                  className={`p-3 rounded-none border text-left transition-colors ${
                     form.paymentMethod === 'card'
-                      ? 'border-emerald-600 bg-emerald-50/60 ring-2 ring-emerald-600/20'
-                      : 'border-neutral-200 bg-white hover:border-neutral-300'
+                      ? 'border-neutral-950 bg-neutral-950 text-white'
+                      : 'border-neutral-300 bg-white hover:border-neutral-900 text-neutral-900'
                   }`}
                 >
-                  <CreditCard className="w-5 h-5 text-indigo-600 mb-1.5" />
-                  <p className="text-xs font-bold text-neutral-900">Картой курьеру</p>
-                  <p className="text-[10px] text-neutral-500">Через POS-терминал</p>
+                  <CreditCard className="w-4 h-4 mb-2" />
+                  <p className="text-xs font-bold uppercase tracking-wider">Картой курьеру</p>
+                  <p className={`text-[10px] font-mono mt-0.5 ${form.paymentMethod === 'card' ? 'text-neutral-300' : 'text-neutral-500'}`}>Через POS-терминал</p>
                 </button>
               </div>
             </div>
 
-            {/* Submit Button */}
+            {/* Submit Button - Sharp Square */}
             <button
               type="submit"
               disabled={submitting}
-              className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-300 text-white py-4 rounded-2xl font-black text-base sm:text-lg transition-all active:scale-95 shadow-emerald shadow-lg flex items-center justify-center gap-2"
+              className="w-full bg-neutral-950 hover:bg-neutral-800 disabled:bg-neutral-400 text-white py-4 rounded-none font-bold text-xs sm:text-sm uppercase tracking-wider transition-colors border border-neutral-950 flex items-center justify-center gap-2 active:translate-y-px"
             >
               {submitting ? (
-                <span>⏳ Оформляем заказ...</span>
+                <span className="font-mono">ОФОРМЛЕНИЕ ЗАКАЗА...</span>
               ) : (
                 <>
-                  <CheckCircle2 className="w-5 h-5" />
-                  <span>Подтвердить заказ ({formatPrice(finalTotal)})</span>
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>ПОДТВЕРДИТЬ ЗАКАЗ &mdash; {formatPrice(finalTotal)}</span>
                 </>
               )}
             </button>
 
-            <div className="flex items-center justify-center gap-2 text-xs text-neutral-400">
-              <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span>После оформления откроется WhatsApp для отправки чека оператору</span>
+            <div className="flex items-center justify-center gap-2 text-xs font-mono uppercase text-neutral-500">
+              <ShieldCheck className="w-4 h-4 text-neutral-700" />
+              <span>Заказ поступит сотруднику на сборку автоматически</span>
             </div>
           </form>
         </div>
 
-        {/* Right Summary (5 cols) */}
+        {/* Right Summary (5 cols) - Square Architectural Panel */}
         <div className="md:col-span-5">
-          <div className="bg-white rounded-3xl p-6 shadow-xs border border-neutral-200/70 sticky top-24 space-y-5">
-            <div className="flex items-center justify-between border-b border-neutral-100 pb-4">
-              <h3 className="font-black text-base text-neutral-900 flex items-center gap-2">
-                <ShoppingBag className="w-5 h-5 text-emerald-600" />
-                <span>Ваш заказ</span>
+          <div className="bg-white rounded-none p-6 border border-neutral-300 sticky top-24 space-y-5">
+            <div className="flex items-center justify-between border-b border-neutral-200 pb-3">
+              <h3 className="font-bold text-sm text-neutral-950 uppercase tracking-tight flex items-center gap-2">
+                <ShoppingBag className="w-4 h-4 text-neutral-700" />
+                <span>Состав заказа</span>
               </h3>
-              <span className="text-xs font-bold text-neutral-500 bg-neutral-100 px-2.5 py-0.5 rounded-full">
-                {items.length} поз.
+              <span className="text-[11px] font-mono font-bold text-neutral-600 bg-neutral-100 border border-neutral-200 px-2 py-0.5 rounded-none">
+                {items.length} ПОЗ.
               </span>
             </div>
 
@@ -458,20 +453,20 @@ export default function CheckoutPage() {
             <div className="space-y-3 max-h-72 overflow-y-auto pr-1">
               {items.map((item) => (
                 <div key={item.id} className="flex items-center gap-3">
-                  <div className="relative w-12 h-12 flex-shrink-0 bg-neutral-100 rounded-xl overflow-hidden border border-neutral-200/60 flex items-center justify-center">
+                  <div className="relative w-12 h-12 flex-shrink-0 bg-[#f8f8f6] rounded-none border border-neutral-200 overflow-hidden flex items-center justify-center">
                     {item.imageUrl ? (
                       <Image src={item.imageUrl} alt={item.name} fill className="object-cover" unoptimized />
                     ) : (
-                      <span className="text-xl">📦</span>
+                      <span className="font-mono text-[10px] font-bold text-neutral-400">SS</span>
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-neutral-900 line-clamp-1">{item.name}</p>
-                    <p className="text-[11px] text-neutral-500">
-                      {item.quantity} × {formatPrice(item.price)}
+                    <p className="text-xs font-bold text-neutral-950 uppercase tracking-tight line-clamp-1">{item.name}</p>
+                    <p className="text-[11px] font-mono text-neutral-500">
+                      {item.quantity} &times; {formatPrice(item.price)}
                     </p>
                   </div>
-                  <div className="text-xs font-black text-neutral-900 font-mono">
+                  <div className="text-xs font-mono font-bold text-neutral-950">
                     {formatPrice(item.price * item.quantity)}
                   </div>
                 </div>
@@ -479,35 +474,28 @@ export default function CheckoutPage() {
             </div>
 
             {/* Total breakdown */}
-            <div className="border-t border-neutral-100 pt-4 space-y-2 text-xs">
-              <div className="flex justify-between text-neutral-500">
+            <div className="border-t border-neutral-200 pt-4 space-y-2 text-xs font-mono">
+              <div className="flex justify-between text-neutral-500 uppercase">
                 <span>Сумма товаров:</span>
-                <span className="font-bold text-neutral-800">{formatPrice(cartTotal)}</span>
+                <span className="font-bold text-neutral-900">{formatPrice(cartTotal)}</span>
               </div>
-              <div className="flex justify-between text-neutral-500">
-                <span className="flex items-center gap-1">
-                  <span>Доставка:</span>
-                  {isFreeDelivery && (
-                    <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1.5 rounded font-bold">
-                      Бесплатно
-                    </span>
-                  )}
-                </span>
-                <span className={`font-bold ${isFreeDelivery ? 'text-emerald-600' : 'text-neutral-800'}`}>
-                  {isFreeDelivery ? '0 ₽' : formatPrice(DELIVERY_FEE)}
+              <div className="flex justify-between text-neutral-500 uppercase">
+                <span>Доставка:</span>
+                <span className={`font-bold ${isFreeDelivery ? 'text-neutral-900' : 'text-neutral-900'}`}>
+                  {isFreeDelivery ? 'БЕСПЛАТНО' : formatPrice(DELIVERY_FEE)}
                 </span>
               </div>
 
-              <div className="border-t border-neutral-100 pt-3 flex justify-between items-center text-sm">
-                <span className="font-bold text-neutral-900">Итого к оплате:</span>
-                <span className="text-xl font-black text-emerald-700">{formatPrice(finalTotal)}</span>
+              <div className="border-t border-neutral-200 pt-3 flex justify-between items-center text-sm">
+                <span className="font-bold text-neutral-950 uppercase font-sans">Итого:</span>
+                <span className="text-lg font-mono font-black text-neutral-950">{formatPrice(finalTotal)}</span>
               </div>
             </div>
 
-            {/* Security pill */}
-            <div className="bg-emerald-50 rounded-2xl p-3 text-[11px] text-emerald-800 leading-snug flex items-center gap-2.5">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-              <span>Оплата производится только после получения и проверки свежести продуктов.</span>
+            {/* Security note */}
+            <div className="bg-neutral-50 border border-neutral-200 rounded-none p-3 text-[11px] font-mono uppercase text-neutral-600 leading-snug flex items-center gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-neutral-700 flex-shrink-0" />
+              <span>Оплата производится только после получения и проверки позиций.</span>
             </div>
           </div>
         </div>
@@ -515,3 +503,4 @@ export default function CheckoutPage() {
     </div>
   )
 }
+

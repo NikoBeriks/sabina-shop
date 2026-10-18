@@ -1,12 +1,23 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Golos_Text, IBM_Plex_Mono } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin', 'cyrillic'] })
+const golos = Golos_Text({
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-sans',
+  display: 'swap',
+})
+
+const mono = IBM_Plex_Mono({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin', 'cyrillic'],
+  variable: '--font-mono',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
-  title: 'Sabina Shop — Продукты и еда с доставкой',
-  description: 'Онлайн-супермаркет: свежие продукты питания, овощи, фрукты, молочные продукты, мясо и напитки с доставкой на дом.',
+  title: 'Магазин Хавпачевых — Продукты и еда с доставкой',
+  description: 'Онлайн-супермаркет «Магазин Хавпачевых»: свежие продукты питания, овощи, фрукты, молочные продукты, мясо и напитки с экспресс-доставкой на дом.',
 }
 
 export default function RootLayout({
@@ -15,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="ru">
-      <body className={inter.className}>{children}</body>
+    <html lang="ru" className={`${golos.variable} ${mono.variable}`}>
+      <body className={`${golos.className} font-sans antialiased bg-[#fcfcfb] text-neutral-900`}>{children}</body>
     </html>
   )
 }

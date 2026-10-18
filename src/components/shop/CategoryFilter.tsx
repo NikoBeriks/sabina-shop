@@ -6,20 +6,6 @@ interface CategoryFilterProps {
   onSelect: (cat: string) => void
 }
 
-const CATEGORY_ICONS: Record<string, string> = {
-  'Все': '🧺',
-  'Фрукты и овощи': '🍏',
-  'Молочные продукты': '🥛',
-  'Мясо и рыба': '🥩',
-  'Хлеб и выпечка': '🥖',
-  'Напитки': '🧃',
-  'Бакалея': '🍝',
-  'Заморозка': '❄️',
-  'Кондитерские': '🍫',
-  'Готовая еда': '🍱',
-  'Бытовая химия': '🧼',
-}
-
 export default function CategoryFilter({
   categories,
   selected,
@@ -27,22 +13,28 @@ export default function CategoryFilter({
 }: CategoryFilterProps) {
   return (
     <div className="relative">
-      <div className="flex gap-2.5 overflow-x-auto pb-3 pt-1 scrollbar-none snap-x snap-mandatory">
-        {categories.map((cat) => {
+      <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none snap-x snap-mandatory">
+        {categories.map((cat, index) => {
           const isSelected = selected === cat
-          const icon = CATEGORY_ICONS[cat] || '🏷️'
+          const indexNum = index === 0 ? 'ALL' : String(index).padStart(2, '0')
 
           return (
             <button
               key={cat}
               onClick={() => onSelect(cat)}
-              className={`flex-shrink-0 snap-start flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-200 active:scale-95 ${
+              className={`flex-shrink-0 snap-start flex items-center gap-2.5 px-3.5 py-2 text-xs font-semibold uppercase tracking-wider transition-colors duration-150 rounded-none border ${
                 isSelected
-                  ? 'bg-emerald-600 text-white shadow-emerald shadow-md ring-2 ring-emerald-600/30 font-bold'
-                  : 'bg-white text-neutral-700 hover:bg-neutral-50 hover:text-emerald-700 border border-neutral-200/80 shadow-xs'
+                  ? 'bg-neutral-950 text-white border-neutral-950'
+                  : 'bg-white text-neutral-800 border-neutral-300 hover:border-neutral-900 hover:bg-neutral-50'
               }`}
             >
-              <span className="text-base leading-none select-none">{icon}</span>
+              <span
+                className={`font-mono text-[10px] tracking-widest ${
+                  isSelected ? 'text-emerald-400 font-bold' : 'text-neutral-400'
+                }`}
+              >
+                {indexNum}
+              </span>
               <span>{cat}</span>
             </button>
           )
@@ -51,3 +43,4 @@ export default function CategoryFilter({
     </div>
   )
 }
+

@@ -1,4 +1,4 @@
-# 🛍️ Sabina Shop — Интернет-магазин
+# 🛍️ Магазин Хавпачевых — Интернет-магазин
 
 Полноценный интернет-магазин на **Next.js 14 + TypeScript + Tailwind CSS + SQLite (Prisma ORM)**.
 

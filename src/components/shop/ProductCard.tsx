@@ -17,19 +17,6 @@ export interface Product {
   barcode?: string | null
 }
 
-const CATEGORY_ICONS: Record<string, { emoji: string; bg: string }> = {
-  'Молочные продукты': { emoji: '🥛', bg: 'from-blue-50 to-indigo-100/70' },
-  'Фрукты и овощи': { emoji: '🍏', bg: 'from-emerald-50 to-green-100/70' },
-  'Мясо и рыба': { emoji: '🥩', bg: 'from-rose-50 to-red-100/70' },
-  'Хлеб и выпечка': { emoji: '🥖', bg: 'from-amber-50 to-yellow-100/70' },
-  'Бакалея': { emoji: '🍝', bg: 'from-orange-50 to-amber-100/70' },
-  'Напитки': { emoji: '🥤', bg: 'from-cyan-50 to-sky-100/70' },
-  'Кондитерские': { emoji: '🍫', bg: 'from-purple-50 to-pink-100/70' },
-  'Заморозка': { emoji: '❄️', bg: 'from-teal-50 to-blue-100/70' },
-  'Готовая еда': { emoji: '🍱', bg: 'from-yellow-50 to-orange-100/70' },
-  'Бытовая химия': { emoji: '🧼', bg: 'from-blue-50 to-teal-100/70' },
-}
-
 interface ProductCardProps {
   product: Product
   onQuickView?: (product: Product) => void
@@ -68,58 +55,63 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     updateQuantity(product.id, quantity + 1)
   }
 
-  const categoryInfo = CATEGORY_ICONS[product.category] || {
-    emoji: '🛒',
-    bg: 'from-neutral-50 to-neutral-100',
-  }
-
-  // Determine special badge
+  // Determine strict architectural status badge
   const badge = useMemo(() => {
     if (product.stock === 0) return null
-    if (product.id % 4 === 1) return { label: '🔥 Хит', bg: 'bg-rose-500 text-white' }
-    if (product.category === 'Фрукты и овощи' || product.category === 'Молочные продукты') {
-      return { label: '🌿 Свежее', bg: 'bg-emerald-600 text-white' }
+    if (product.id % 4 === 1) {
+      return { label: 'ХИТ', style: 'bg-neutral-950 text-white border-neutral-950' }
     }
-    if (product.price <= 500) return { label: '✨ Выгодно', bg: 'bg-amber-500 text-white' }
+    if (product.category === 'Фрукты и овощи' || product.category === 'Молочные продукты') {
+      return { label: 'СВЕЖЕЕ', style: 'bg-white text-neutral-900 border-neutral-900' }
+    }
+    if (product.price <= 500) {
+      return { label: 'ВЫГОДНО', style: 'bg-[#122a20] text-emerald-300 border-[#122a20]' }
+    }
     return null
   }, [product.id, product.category, product.price, product.stock])
 
   return (
     <div
       onClick={() => onQuickView?.(product)}
-      className="group relative bg-white rounded-3xl overflow-hidden shadow-xs hover:shadow-soft-lg hover:-translate-y-1 transition-all duration-300 flex flex-col border border-neutral-200/70 hover:border-emerald-300/80 cursor-pointer"
+      className="group relative bg-white rounded-none border border-neutral-300 hover:border-neutral-950 transition-colors duration-150 flex flex-col cursor-pointer"
     >
       {/* Product Image / Placeholder */}
-      <div className="relative aspect-square w-full bg-neutral-100/60 overflow-hidden flex items-center justify-center">
+      <div className="relative aspect-square w-full bg-[#f8f8f6] border-b border-neutral-200 overflow-hidden flex items-center justify-center">
         {product.imageUrl && !imgError ? (
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
+            className="object-cover group-hover:scale-102 transition-transform duration-300"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             onError={() => setImgError(true)}
             unoptimized
           />
         ) : (
-          <div
-            className={`absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br ${categoryInfo.bg}`}
-          >
-            <span className="text-5xl select-none filter drop-shadow-xs group-hover:scale-110 transition-transform duration-300">
-              {categoryInfo.emoji}
+          <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-[#f5f5f2]">
+            <div className="w-10 h-10 border border-neutral-300 flex items-center justify-center mb-2 bg-white">
+              <span className="font-mono text-[11px] font-bold text-neutral-700 tracking-wider">
+                {product.category.slice(0, 3).toUpperCase()}
+              </span>
+            </div>
+            <span className="text-xs font-semibold text-neutral-800 line-clamp-1 uppercase tracking-tight">
+              {product.name}
+            </span>
+            <span className="text-[10px] font-mono text-neutral-400 mt-1 uppercase tracking-widest">
+              ГАСТРОНОМИЯ &middot; SS
             </span>
           </div>
         )}
 
-        {/* Category chip */}
-        <span className="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-neutral-700 text-[11px] font-medium px-2.5 py-0.5 rounded-full border border-neutral-200/50 shadow-xs">
+        {/* Category tag */}
+        <span className="absolute top-2.5 left-2.5 bg-white/95 text-neutral-700 font-mono text-[10px] uppercase tracking-wider px-2 py-0.5 border border-neutral-300 rounded-none">
           {product.category}
         </span>
 
-        {/* Special status badge */}
+        {/* Strict status badge */}
         {badge && (
           <span
-            className={`absolute top-2.5 right-2.5 ${badge.bg} text-[10px] font-bold px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wider`}
+            className={`absolute top-2.5 right-2.5 ${badge.style} font-mono text-[10px] font-bold px-2 py-0.5 uppercase tracking-widest border rounded-none`}
           >
             {badge.label}
           </span>
@@ -127,23 +119,23 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
 
         {/* Out of stock overlay */}
         {product.stock === 0 && (
-          <div className="absolute inset-0 bg-neutral-900/60 backdrop-blur-xs flex items-center justify-center p-3 text-center">
-            <span className="bg-white/95 text-neutral-800 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
-              Нет в наличии
+          <div className="absolute inset-0 bg-neutral-900/70 flex items-center justify-center p-3 text-center">
+            <span className="bg-white text-neutral-950 text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-none border border-neutral-950 font-mono">
+              НЕТ В НАЛИЧИИ
             </span>
           </div>
         )}
 
-        {/* Quick view hint hover button */}
+        {/* Quick view button (hover) */}
         <button
           type="button"
           onClick={(e) => {
             e.stopPropagation()
             onQuickView?.(product)
           }}
-          className="absolute inset-x-4 bottom-3 hidden sm:flex items-center justify-center gap-1.5 py-2 rounded-2xl bg-white/90 backdrop-blur-md text-neutral-800 text-xs font-semibold opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-md hover:bg-white"
+          className="absolute inset-x-3 bottom-3 hidden sm:flex items-center justify-center gap-1.5 py-2 rounded-none bg-white border border-neutral-900 text-neutral-900 text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity duration-150 hover:bg-neutral-950 hover:text-white"
         >
-          <Eye className="w-3.5 h-3.5 text-emerald-600" />
+          <Eye className="w-3.5 h-3.5" />
           <span>Быстрый просмотр</span>
         </button>
       </div>
@@ -151,7 +143,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
       {/* Product Information */}
       <div className="p-3.5 sm:p-4 flex flex-col flex-1 justify-between gap-3">
         <div>
-          <h3 className="font-bold text-neutral-900 text-sm sm:text-base leading-snug line-clamp-2 group-hover:text-emerald-700 transition-colors">
+          <h3 className="font-bold text-neutral-950 text-sm leading-snug line-clamp-2 uppercase tracking-tight group-hover:text-neutral-700 transition-colors">
             {product.name}
           </h3>
           {product.description && (
@@ -162,38 +154,38 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
         </div>
 
         {/* Bottom price and cart actions */}
-        <div className="pt-2 flex items-center justify-between gap-2 border-t border-neutral-100">
+        <div className="pt-2 flex items-center justify-between gap-2 border-t border-neutral-200">
           <div className="flex flex-col">
-            <span className="text-[11px] text-neutral-400 font-medium leading-none">Цена</span>
-            <span className="font-black text-neutral-900 text-base sm:text-lg leading-tight mt-0.5">
+            <span className="text-[10px] text-neutral-400 font-mono uppercase tracking-wider">Цена</span>
+            <span className="font-mono font-bold text-neutral-950 text-base sm:text-lg leading-tight mt-0.5">
               {formatPrice(product.price)}
             </span>
           </div>
 
-          {/* Cart actions: Stepper if in cart, or big Add button */}
+          {/* Cart actions: Square Stepper or Square Buy button */}
           {quantity > 0 ? (
             <div
-              className="flex items-center bg-emerald-50 border border-emerald-200/90 rounded-2xl p-1 gap-1 shadow-xs"
+              className="flex items-center border border-neutral-900 bg-white rounded-none"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 type="button"
                 onClick={handleMinus}
-                className="w-7 h-7 flex items-center justify-center rounded-xl bg-white text-emerald-800 hover:bg-emerald-100/70 active:scale-90 transition-all shadow-xs"
+                className="w-7 h-7 flex items-center justify-center text-neutral-800 hover:bg-neutral-100 transition-colors rounded-none border-r border-neutral-200"
                 title="Уменьшить"
               >
-                <Minus className="w-3.5 h-3.5" />
+                <Minus className="w-3 h-3" />
               </button>
-              <span className="w-6 text-center font-black text-xs sm:text-sm text-emerald-900">
+              <span className="w-6 text-center font-mono font-bold text-xs text-neutral-950">
                 {quantity}
               </span>
               <button
                 type="button"
                 onClick={handlePlus}
-                className="w-7 h-7 flex items-center justify-center rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 active:scale-90 transition-all shadow-xs"
+                className="w-7 h-7 flex items-center justify-center bg-neutral-950 text-white hover:bg-neutral-800 transition-colors rounded-none"
                 title="Увеличить"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-3 h-3" />
               </button>
             </div>
           ) : (
@@ -201,18 +193,18 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               type="button"
               onClick={handleAdd}
               disabled={product.stock === 0}
-              className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all duration-200 active:scale-95 ${
+              className={`flex items-center justify-center gap-1.5 px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider transition-colors duration-150 rounded-none border ${
                 justAdded
-                  ? 'bg-emerald-600 text-white shadow-emerald shadow-sm'
+                  ? 'bg-neutral-950 text-white border-neutral-950'
                   : product.stock === 0
-                  ? 'bg-neutral-100 text-neutral-400 cursor-not-allowed'
-                  : 'bg-neutral-900 hover:bg-emerald-600 text-white shadow-xs hover:shadow-emerald'
+                  ? 'bg-neutral-100 text-neutral-400 border-neutral-200 cursor-not-allowed'
+                  : 'bg-neutral-950 hover:bg-neutral-800 text-white border-neutral-950 active:translate-y-px'
               }`}
             >
               {justAdded ? (
                 <>
-                  <Check className="w-3.5 h-3.5 text-white animate-bounce" />
-                  <span>В корзине!</span>
+                  <Check className="w-3.5 h-3.5 text-white" />
+                  <span>В корзине</span>
                 </>
               ) : (
                 <>
@@ -227,3 +219,4 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     </div>
   )
 }
+

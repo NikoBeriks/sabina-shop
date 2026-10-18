@@ -1,6 +1,6 @@
 'use client'
 
-import { Zap, ShieldCheck, HeartHandshake, PhoneCall, Sparkles } from 'lucide-react'
+import { Clock, ShieldCheck, CheckCircle2, MessageSquare, ArrowDown, ArrowUpRight } from 'lucide-react'
 
 interface HeroBannerProps {
   onScrollToCatalog?: () => void
@@ -8,98 +8,106 @@ interface HeroBannerProps {
 
 export default function HeroBanner({ onScrollToCatalog }: HeroBannerProps) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-900 text-white">
-      {/* Decorative ambient light orbs */}
-      <div className="absolute -top-24 -left-24 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 -right-24 w-80 h-80 bg-teal-400/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/3 w-64 h-64 bg-emerald-300/10 rounded-full blur-2xl pointer-events-none" />
+    <section className="relative bg-[#0d1c14] text-white border-b border-[#1b3829]">
+      {/* Subtle fine geometric grid pattern */}
+      <div
+        className="absolute inset-0 opacity-[0.035] pointer-events-none"
+        style={{
+          backgroundImage: `linear-gradient(to right, #ffffff 1px, transparent 1px), linear-gradient(to bottom, #ffffff 1px, transparent 1px)`,
+          backgroundSize: '48px 48px',
+        }}
+      />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 md:py-20">
-        <div className="max-w-3xl mx-auto text-center">
-          {/* Top pill badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-emerald-100 text-xs sm:text-sm font-medium mb-5 shadow-sm">
-            <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="tracking-wide">Экспресс-доставка любимых продуктов</span>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 md:py-20">
+        <div className="max-w-3xl">
+          {/* Strict editorial index tag */}
+          <div className="inline-flex items-center gap-2.5 px-3 py-1 bg-white/5 border border-white/15 text-neutral-300 font-mono text-[11px] sm:text-xs tracking-widest uppercase mb-6 rounded-none">
+            <span className="w-1.5 h-1.5 bg-emerald-400" />
+            <span>ГАСТРОНОМИЯ &middot; СУПЕРМАРКЕТ &middot; ДОСТАВКА ОТ 30 МИНУТ</span>
           </div>
 
-          {/* Main Title */}
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-tight sm:leading-none mb-5 text-white">
-            Свежие продукты прямо{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-200 via-teal-100 to-white">
-              к вашему столу
-            </span>
+          {/* Main Title - Strict, authoritative, confident */}
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.08] mb-6 text-white uppercase">
+            Свежие продукты <br className="hidden sm:inline" />
+            <span className="text-neutral-400 font-light">к вашему столу.</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="text-emerald-100/90 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mx-auto mb-8 font-normal">
-            Отборные овощи и фрукты, свежее мясо, натуральная молочка и свежая выпечка.
-            Собираем заказ бережно и привозим без опозданий!
+          <p className="text-neutral-300 text-sm sm:text-base md:text-lg leading-relaxed max-w-2xl mb-8 font-normal">
+            Отборные сезонные овощи, фермерское мясо, ремесленная молочная продукция и свежая выпечка.
+            Формируем заказы вручную и привозим без задержек.
           </p>
 
-          {/* Action buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10">
+          {/* Action buttons - Strict, square corners */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-14">
             <button
               onClick={onScrollToCatalog}
-              className="px-6 py-3 rounded-full bg-white text-emerald-900 font-bold text-sm sm:text-base hover:bg-emerald-50 active:scale-95 transition-all shadow-lg shadow-black/10 flex items-center gap-2"
+              className="px-6 sm:px-7 py-3.5 bg-white text-neutral-950 font-bold text-xs sm:text-sm uppercase tracking-wider hover:bg-neutral-200 transition-colors flex items-center gap-2.5 rounded-none border border-white shadow-none active:translate-y-px"
             >
-              <Sparkles className="w-4 h-4 text-emerald-600" />
               <span>Перейти в каталог</span>
+              <ArrowDown className="w-4 h-4 text-neutral-950" />
             </button>
             <a
               href="https://wa.me/79287144816"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/25 text-white font-medium text-sm sm:text-base active:scale-95 transition-all flex items-center gap-2"
+              className="px-6 py-3.5 bg-transparent border border-white/30 hover:border-white text-white font-semibold text-xs sm:text-sm uppercase tracking-wider hover:bg-white/5 transition-colors flex items-center gap-2.5 rounded-none active:translate-y-px"
             >
-              <PhoneCall className="w-4 h-4 text-emerald-200" />
-              <span>Написать в WhatsApp</span>
+              <MessageSquare className="w-4 h-4 text-emerald-400" />
+              <span>Заказ в WhatsApp</span>
+              <ArrowUpRight className="w-3.5 h-3.5 opacity-60" />
             </a>
           </div>
+        </div>
 
-          {/* Value props badges */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3 text-left">
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-3.5 rounded-2xl flex items-center gap-3 hover:bg-white/15 transition-all">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-200">
-                <Zap className="w-5 h-5 text-emerald-300" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-white">От 30 минут</p>
-                <p className="text-[11px] text-emerald-100/70">Быстрая доставка</p>
-              </div>
+        {/* Value props badges - Razor-sharp architectural grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-0 border-t border-l border-white/15">
+          <div className="p-4 sm:p-5 border-r border-b border-white/15 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[11px] text-emerald-400 font-semibold tracking-wider">
+                01 &mdash; СКОРОСТЬ
+              </span>
+              <Clock className="w-4 h-4 text-neutral-400" />
             </div>
+            <p className="text-sm font-bold text-white uppercase tracking-tight">От 30 минут</p>
+            <p className="text-xs text-neutral-400 mt-0.5 leading-snug">Экспресс-доставка по городу</p>
+          </div>
 
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-3.5 rounded-2xl flex items-center gap-3 hover:bg-white/15 transition-all">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-200">
-                <ShieldCheck className="w-5 h-5 text-teal-300" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-white">100% Свежее</p>
-                <p className="text-[11px] text-emerald-100/70">Строгий контроль</p>
-              </div>
+          <div className="p-4 sm:p-5 border-r border-b border-white/15 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[11px] text-emerald-400 font-semibold tracking-wider">
+                02 &mdash; ОТБОР
+              </span>
+              <ShieldCheck className="w-4 h-4 text-neutral-400" />
             </div>
+            <p className="text-sm font-bold text-white uppercase tracking-tight">100% Контроль</p>
+            <p className="text-xs text-neutral-400 mt-0.5 leading-snug">Ежедневная ревизия свежести</p>
+          </div>
 
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-3.5 rounded-2xl flex items-center gap-3 hover:bg-white/15 transition-all">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-200">
-                <HeartHandshake className="w-5 h-5 text-emerald-300" />
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-white">Гарантия</p>
-                <p className="text-[11px] text-emerald-100/70">Заменим или вернем</p>
-              </div>
+          <div className="p-4 sm:p-5 border-r border-b border-white/15 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[11px] text-emerald-400 font-semibold tracking-wider">
+                03 &mdash; НАДЁЖНОСТЬ
+              </span>
+              <CheckCircle2 className="w-4 h-4 text-neutral-400" />
             </div>
+            <p className="text-sm font-bold text-white uppercase tracking-tight">Гарантия</p>
+            <p className="text-xs text-neutral-400 mt-0.5 leading-snug">Заменим товар или вернем средства</p>
+          </div>
 
-            <div className="bg-white/10 backdrop-blur-md border border-white/15 p-3 sm:p-3.5 rounded-2xl flex items-center gap-3 hover:bg-white/15 transition-all">
-              <div className="w-9 h-9 rounded-xl bg-emerald-500/30 flex items-center justify-center flex-shrink-0 text-emerald-200">
-                <span className="text-base select-none">💬</span>
-              </div>
-              <div>
-                <p className="text-xs sm:text-sm font-bold text-white">WhatsApp & TG</p>
-                <p className="text-[11px] text-emerald-100/70">Чек и статус заказа</p>
-              </div>
+          <div className="p-4 sm:p-5 border-r border-b border-white/15 bg-white/[0.02] hover:bg-white/[0.05] transition-colors">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-mono text-[11px] text-emerald-400 font-semibold tracking-wider">
+                04 &mdash; СВЯЗЬ
+              </span>
+              <MessageSquare className="w-4 h-4 text-neutral-400" />
             </div>
+            <p className="text-sm font-bold text-white uppercase tracking-tight">WhatsApp / Чат</p>
+            <p className="text-xs text-neutral-400 mt-0.5 leading-snug">Прямой диалог и чек к заказу</p>
           </div>
         </div>
       </div>
     </section>
   )
 }
+
